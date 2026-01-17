@@ -1,4 +1,5 @@
 // script.js
+import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/+esm";
 
 // DOM Elements
 const dropArea = document.getElementById('dropArea');
@@ -92,39 +93,25 @@ async function handleTranscribe() {
         loader.classList.add('hidden');
         outputContent.classList.remove('hidden');
 
-        if (Array.isArray(result) && result[0] && result[0].generated_text) {
-            outputContent.innerText = result[0].generated_text;
-        } else if (result.error) {
-            outputContent.innerHTML = `<span style="color: #ef4444;">Error: ${result.error}</span>`;
-        } else {
-            outputContent.innerText = JSON.stringify(result, null, 2);
-        }
+        outputContent.innerText = result ? result : "No text count be recognized.";
 
     } catch (error) {
         console.error(error);
         loader.classList.add('hidden');
         outputContent.classList.remove('hidden');
-        outputContent.innerHTML = `<span style="color: #ef4444;">${error.message || "An error occurred."}</span>`;
+        outputContent.innerHTML = `<span style="color: #ef4444;">${error.message || "An error occurred during transcription."}</span>`;
     }
 }
 
-// FIXED: Instead of calling HF directly, we call our Vercel API route
 async function transcribeManuscript(imageFile) {
-    const response = await fetch('/api/transcribe', {
-        method: "POST",
-        body: imageFile,
-    });
+    // Connect directly to the Space
+    const app = await Client.connect("cosmicshubham/ancient-document-digitizer");
 
-    if (!response.ok) {
-        let errorMessage = `Server Error: ${response.status} ${response.statusText}`;
-        try {
-            const errorData = await response.json();
-            if (errorData.error) errorMessage = errorData.error;
-        } catch (e) {
-            // Could not parse JSON, stick with status text (likely HTML error from Vercel)
-        }
-        throw new Error(errorMessage);
-    }
+    // The predict function takes a generic blob/file object
+    const result = await app.predict("/predict", [
+        imageFile,
+    ]);
 
-    return await response.json();
+    // Gradio client returns { data: [result] }
+    return result.data[0];
 }

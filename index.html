@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ancient Manuscript Digitizer | AI OCR</title>
     <meta name="description" content="Digitize ancient manuscripts using advanced AI OCR powered by Hugging Face.">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="app-container">
         <header>
@@ -34,7 +38,8 @@
                         <h3>Upload Manuscript</h3>
                         <p>Drag & drop or click to browse</p>
                         <input type="file" id="imageInput" accept="image/*" hidden>
-                        <button class="btn btn-primary" onclick="document.getElementById('imageInput').click()">Select Image</button>
+                        <button class="btn btn-primary" onclick="document.getElementById('imageInput').click()">Select
+                            Image</button>
                     </div>
                     <div class="preview-area hidden" id="previewArea">
                         <div class="image-wrapper">
@@ -78,6 +83,7 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
+
 </html>
