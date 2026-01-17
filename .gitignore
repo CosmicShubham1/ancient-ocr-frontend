@@ -1,1 +1,15 @@
+# Dependencies
+node_modules/
+
+# Environment variables (Secrets)
 .env
+
+# Temporary Test Scripts
+test_*.js
+check_model_status.js
+connection_log.txt
+test_result.json
+
+# System
+.DS_Store
+Thumbs.db
