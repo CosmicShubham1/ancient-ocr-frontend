@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
     try {
-        const SPACE_URL = "https://cosmicshubham-ancient-document-digitizer.hf.space/call/predict";
+        const SPACE_URL = "https://cosmicshubham-ancient-document-digitizer.hf.space/predict";
 
         // Read the request stream (image data) into a buffer
         const buffer = await new Promise((resolve, reject) => {
