@@ -104,7 +104,7 @@ async function handleTranscribe() {
         console.error(error);
         loader.classList.add('hidden');
         outputContent.classList.remove('hidden');
-        outputContent.innerHTML = `<span style="color: #ef4444;">Connection Error. Please try again.</span>`;
+        outputContent.innerHTML = `<span style="color: #ef4444;">${error.message || "An error occurred."}</span>`;
     }
 }
 
@@ -114,5 +114,17 @@ async function transcribeManuscript(imageFile) {
         method: "POST",
         body: imageFile,
     });
+
+    if (!response.ok) {
+        let errorMessage = `Server Error: ${response.status} ${response.statusText}`;
+        try {
+            const errorData = await response.json();
+            if (errorData.error) errorMessage = errorData.error;
+        } catch (e) {
+            // Could not parse JSON, stick with status text (likely HTML error from Vercel)
+        }
+        throw new Error(errorMessage);
+    }
+
     return await response.json();
 }
