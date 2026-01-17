@@ -1,5 +1,4 @@
-const MODEL_ID = "cosmicshubham/ancient-manuscript-ocr";
-const API_TOKEN = process.env.HF_TOKEN; // Provided by user
+// script.js
 
 // DOM Elements
 const dropArea = document.getElementById('dropArea');
@@ -39,7 +38,7 @@ dropArea.addEventListener('drop', (e) => {
 
 removeBtn.addEventListener('click', () => {
     currentFile = null;
-    imageInput.value = ''; // Reset input
+    imageInput.value = '';
     dropArea.classList.remove('hidden');
     previewArea.classList.add('hidden');
     resultSection.classList.add('hidden');
@@ -73,7 +72,7 @@ function handleFile(file) {
         imagePreview.src = e.target.result;
         dropArea.classList.add('hidden');
         previewArea.classList.remove('hidden');
-        resultSection.classList.add('hidden'); // Hide previous results
+        resultSection.classList.add('hidden');
     };
     reader.readAsDataURL(file);
 }
@@ -81,13 +80,10 @@ function handleFile(file) {
 async function handleTranscribe() {
     if (!currentFile) return;
 
-    // Show Loader
     resultSection.classList.remove('hidden');
     loader.classList.remove('hidden');
     outputContent.classList.add('hidden');
     outputContent.innerText = '';
-
-    // Scroll to result
     resultSection.scrollIntoView({ behavior: 'smooth' });
 
     try {
@@ -96,13 +92,11 @@ async function handleTranscribe() {
         loader.classList.add('hidden');
         outputContent.classList.remove('hidden');
 
-        // Handle API output format
         if (Array.isArray(result) && result[0] && result[0].generated_text) {
             outputContent.innerText = result[0].generated_text;
         } else if (result.error) {
             outputContent.innerHTML = `<span style="color: #ef4444;">Error: ${result.error}</span>`;
         } else {
-            // Fallback for some models that return just the text or different structure
             outputContent.innerText = JSON.stringify(result, null, 2);
         }
 
@@ -110,19 +104,15 @@ async function handleTranscribe() {
         console.error(error);
         loader.classList.add('hidden');
         outputContent.classList.remove('hidden');
-        outputContent.innerHTML = `<span style="color: #ef4444;">Connection Error. Please check your internet or try again later.</span>`;
+        outputContent.innerHTML = `<span style="color: #ef4444;">Connection Error. Please try again.</span>`;
     }
 }
 
+// FIXED: Instead of calling HF directly, we call our Vercel API route
 async function transcribeManuscript(imageFile) {
-    const response = await fetch(
-        `https://api-inference.huggingface.co/models/${MODEL_ID}`,
-        {
-            headers: { Authorization: `Bearer ${API_TOKEN}` },
-            method: "POST",
-            body: imageFile,
-        }
-    );
-    const result = await response.json();
-    return result;
+    const response = await fetch('/api/transcribe', {
+        method: "POST",
+        body: imageFile,
+    });
+    return await response.json();
 }
