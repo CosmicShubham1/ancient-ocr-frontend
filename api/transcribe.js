@@ -1,6 +1,7 @@
+// api/transcribe.js
 export const config = {
     api: {
-        bodyParser: false, // Disabling bodyParser allows us to stream the raw image data
+        bodyParser: false, // Keep this false to handle the raw image stream
     },
 };
 
@@ -12,10 +13,9 @@ export default async function handler(req, res) {
         const MODEL_ID = "cosmicshubham/ancient-manuscript-ocr";
 
         if (!API_TOKEN) {
-            throw new Error("HF_TOKEN is not defined in Vercel environment variables.");
+            throw new Error("HF_TOKEN is missing in Vercel settings.");
         }
 
-        // Forward the image data exactly as received
         const response = await fetch(
             `https://api-inference.huggingface.co/models/${MODEL_ID}`,
             {
@@ -24,7 +24,8 @@ export default async function handler(req, res) {
                     "Content-Type": req.headers["content-type"] || "application/octet-stream"
                 },
                 method: "POST",
-                body: req, // This passes the raw incoming stream to Hugging Face
+                body: req, // The incoming stream
+                duplex: 'half' // <--- ADD THIS LINE TO FIX THE ERROR
             }
         );
 
