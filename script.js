@@ -108,7 +108,7 @@ async function transcribeManuscript(imageFile) {
     const app = await Client.connect("cosmicshubham/ancient-document-digitizer");
 
     // The predict function takes a generic blob/file object
-    const result = await app.predict(0, [
+    const result = await app.predict("/predict", [
         imageFile,
     ]);
 
